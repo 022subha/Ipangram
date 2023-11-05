@@ -26,7 +26,7 @@ export function register(data, navigate) {
         return;
       }
       console.log(error);
-      toast.error("Unable to Send Otp", {
+      toast.error(error.message, {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
@@ -67,13 +67,19 @@ export function getUserInfo() {
     try {
       const token = localStorage.getItem("token");
       dispatch(setLoading(true));
-      const response = await apiConnector(`GET`, USER_INFO, {
-        authorization: token,
-      });
+      const response = await apiConnector(
+        `GET`,
+        USER_INFO,
+        {},
+        {
+          authorization: "Bearer " + token,
+        }
+      );
       dispatch(setLoading(false));
       dispatch(setUser(response?.data?.user));
     } catch (error) {
       dispatch(setLoading(false));
+      localStorage.removeItem("token");
       console.log(error);
     }
   };

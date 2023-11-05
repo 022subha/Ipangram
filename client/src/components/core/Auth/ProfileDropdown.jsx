@@ -2,12 +2,14 @@ import { Modal } from "antd";
 import React, { useRef, useState } from "react";
 import { AiOutlineCaretDown, AiOutlineCaretUp } from "react-icons/ai";
 import { VscDashboard, VscSignOut } from "react-icons/vsc";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import useOnClickOutside from "../../../hooks/useOnClickOutside";
+import { setUser } from "../../../redux/slices/profileSlice.js";
 
 export default function ProfileDropdown() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.profile);
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -20,6 +22,7 @@ export default function ProfileDropdown() {
       onOk() {
         setOpen(false);
         localStorage.removeItem("token");
+        dispatch(setUser(null));
         navigate("/");
       },
       okButtonProps: {
@@ -38,7 +41,7 @@ export default function ProfileDropdown() {
     >
       <div className="flex gap-x-1 items-center">
         <img
-          src={user?.image}
+          src={`https://api.dicebear.com/5.x/initials/svg?seed=${user.FirstName} ${user.LastName}`}
           alt={user?.firstName}
           className="w-[40px] aspect-square object-cover rounded-full"
         />

@@ -6,6 +6,7 @@ import Navbar from "./components/common/Navbar";
 import Spinner from "./components/common/Spinner";
 import AddDepartment from "./components/core/Dashboard/AddDepartment";
 import Departments from "./components/core/Dashboard/Departments";
+import EditDepartment from "./components/core/Dashboard/EditDepartment";
 import Employees from "./components/core/Dashboard/Employees";
 import MyProfile from "./components/core/Dashboard/MyProfile";
 import Dashboard from "./pages/Dashboard";
@@ -38,16 +39,23 @@ function App() {
           <Route element={<Dashboard />}>
             <Route path="/dashboard/my-profile" element={<MyProfile />}></Route>
             <Route path="/dashboard/employees" element={<Employees />}></Route>
-            {!user?.role && (
+            {user?.Role === "Manager" && (
               <Route
                 path="/dashboard/departments"
                 element={<Departments />}
               ></Route>
             )}
-            {!user?.role && (
+            {user?.Role === "Manager" && (
               <Route
                 path="/dashboard/add-department"
                 element={<AddDepartment />}
+              ></Route>
+            )}
+
+            {user?.Role === "Manager" && (
+              <Route
+                path="/dashboard/edit-department/:departmentId"
+                element={<EditDepartment />}
               ></Route>
             )}
           </Route>

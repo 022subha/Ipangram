@@ -6,5 +6,5 @@ import profileSlice from "./slices/profileSlice";
 export default combineReducers({
   auth: authSlice,
   profile: profileSlice,
-  course: departmentSlice,
+  department: departmentSlice,
 });

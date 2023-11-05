@@ -1,53 +1,42 @@
 import { Modal } from "antd";
 import React, { useEffect, useState } from "react";
-import {
-  MdArrowDownward,
-  MdArrowUpward,
-  MdDelete,
-  MdEdit,
-} from "react-icons/md";
+import { MdArrowDownward, MdArrowUpward } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { getAllDepartments } from "../../../services/operations/departmentAPI";
 import {
-  deleteEmployee,
   editEmployee,
   getAllEmployees,
 } from "../../../services/operations/employeeAPI";
 
 export default function Employees() {
   const dispatch = useDispatch();
-  const [departments, setDepartments] = useState([{ id: 1, name: "Hr" }]);
-  const [department, setDepartment] = useState(1);
-  const [employees, setEmployees] = useState([
-    {
-      firstName: "Subhajit",
-      lastName: "Samanta",
-      email: "022subha@gmail.com",
-      department: "Hr",
-    },
-  ]);
+  const [departments, setDepartments] = useState([]);
+  const [department, setDepartment] = useState("");
+  const [employees, setEmployees] = useState([]);
+  const [employee, setEmployee] = useState();
 
   useEffect(() => {
-    // setEmployees(dispatch(getAllEmployees()));
-    // setDepartments(dispatch(getAllDepartments()));
+    const fetchEmployees = async () => {
+      const result = await dispatch(getAllEmployees());
+      if (result) {
+        setEmployees(result);
+        setDepartment(result.department ? result.department : "");
+      }
+    };
+
+    const fetchDepartments = async () => {
+      setDepartments(await dispatch(getAllDepartments()));
+    };
+
+    fetchEmployees();
+    fetchDepartments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleEdit = (employeeId) => {
+    console.log(department);
+    console.log(departments);
     dispatch(editEmployee(employeeId, department));
-  };
-
-  const handleDelete = (employeeId) => {
-    Modal.confirm({
-      title: "Confirm",
-      content: "Are you sure you want to delete this employee?",
-      onOk() {
-        dispatch(deleteEmployee(employeeId));
-      },
-      okButtonProps: {
-        className: "bg-custom-gradient",
-      },
-    });
   };
 
   return (
@@ -70,12 +59,11 @@ export default function Employees() {
               Email
             </th>
             <th className="py-[1.4em] px-[0.75em] text-center bg-[#4066ff] border border-[#fff] ">
-              Department
+              Location
             </th>
             <th className="py-[1.4em] px-[0.75em] text-center bg-[#4066ff] border border-[#fff] ">
-              Change Department
+              Department
             </th>
-            <th className="py-[1.4em] px-[0.75em] text-center bg-[#4066ff] border border-[#fff] "></th>
           </tr>
         </thead>
         <tbody>
@@ -85,22 +73,32 @@ export default function Employees() {
                 <tr className="">
                   <td className="border-b-2 border-black text-center h-16">
                     <p>
-                      {employee?.firstName} {employee?.lastName}
+                      {employee?.FirstName} {employee?.LastName}
                     </p>
                   </td>
                   <td className="border-b-2 border-black text-center h-16">
-                    <p>{employee?.email}</p>
+                    <p>{employee?.Email}</p>
                   </td>
                   <td className="border-b-2 border-black text-center h-16">
-                    <p>{employee?.department}</p>
+                    <p>{employee?.Location}</p>
                   </td>
                   <td className="border-b-2 border-black text-center h-16">
                     <select
                       className="outline-none p-1 rounded-md "
                       value={department}
+                      onChange={(e) => {
+                        setDepartment(e.target.value);
+                      }}
                     >
+                      <option value="" disabled>
+                        No Department
+                      </option>
                       {departments.map((item, index) => (
-                        <option key={index} value={item?.id}>
+                        <option
+                          key={index}
+                          value={item?.name}
+                          className="text-center w-fit"
+                        >
                           {item?.name}
                         </option>
                       ))}
@@ -111,16 +109,6 @@ export default function Employees() {
                     >
                       Save
                     </button>
-                  </td>
-
-                  <td className="border-b-2 border-black flex items-center text-center justify-center h-16 ">
-                    <MdEdit className="text-[46px] px-[10px] cursor-pointer" />
-                    <MdDelete
-                      className="text-[46px] px-[10px] text-red-700 cursor-pointer"
-                      onClick={() => {
-                        handleDelete();
-                      }}
-                    />
                   </td>
                 </tr>
               </React.Fragment>

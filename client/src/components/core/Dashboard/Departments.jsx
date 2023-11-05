@@ -13,12 +13,13 @@ export default function Departments() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [departments, setDepartments] = useState([
-    { id: 1, name: "Hr", employee_count: 10 },
-  ]);
+  const [departments, setDepartments] = useState([]);
 
   useEffect(() => {
-    // setDepartments(dispatch(getAllDepartments()));
+    const fetchDepartments = async () => {
+      setDepartments(await dispatch(getAllDepartments()));
+    };
+    fetchDepartments();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -28,6 +29,7 @@ export default function Departments() {
       content: "Are you sure you want to delete this department?",
       onOk() {
         dispatch(deleteDepartment(departmentId));
+        setDepartments(departments.filter((item) => item._id !== departmentId));
       },
       okButtonProps: {
         className: "bg-custom-gradient",
@@ -36,8 +38,7 @@ export default function Departments() {
   };
 
   const handleEdit = (departmentId) => {
-    dispatch(setEditDepartment(departmentId));
-    navigate("/dashboard/add-department");
+    navigate(`/dashboard/edit-department/${departmentId}`);
   };
 
   return (
@@ -63,18 +64,18 @@ export default function Departments() {
                     <p>{department?.name}</p>
                   </td>
                   <td className="border-b-2 border-black text-center h-16">
-                    <p>{department?.employee_count}</p>
+                    <p>{department?.employeeCount}</p>
                   </td>
 
                   <td className="border-b-2 border-black flex items-center text-center justify-center h-16 ">
                     <MdEdit
                       className="text-[46px] px-[10px] cursor-pointer"
-                      onClick={() => handleEdit(department?.id)}
+                      onClick={() => handleEdit(department?._id)}
                     />
                     <MdDelete
                       className="text-[46px] px-[10px] text-red-700 cursor-pointer"
                       onClick={() => {
-                        handleDelete(department?.id);
+                        handleDelete(department?._id);
                       }}
                     />
                   </td>

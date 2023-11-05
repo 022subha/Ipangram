@@ -1,12 +1,11 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const Department = require("../models/departments");
 
 // register controller
 const registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, role } = req.body;
+    const { firstName, lastName, email, password, location, role } = req.body;
 
     // Check if the user with the same email already exists
     const existingUser = await User.findOne({ Email: email });
@@ -23,6 +22,7 @@ const registerUser = async (req, res) => {
       FirstName: firstName,
       LastName: lastName,
       Email: email,
+      Location: location,
       Password: hashedPassword,
       Role: role,
     });
@@ -43,30 +43,26 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     // Find the user by email
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ Email: email });
 
-    // If the user is not found, return an error
     if (!user) {
       return res.status(401).json({ message: "Authentication failed" });
     }
 
-    // Compare the provided password with the hashed password in the database
     const passwordMatch = await bcrypt.compare(password, user.Password);
 
     if (passwordMatch) {
-      const token = jwt.sign(
-        { userId: user._id },
-        JWT_SECRET, // Use your secret key
-        { expiresIn: "15m" } // Set the token expiration time (e.g., 1 hour)
-      );
+      const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+        expiresIn: "15d",
+      });
 
       res.status(200).json({
         message: "Login successful",
-        token: token, // Include the token in the response
+        token: token,
+        user,
       });
     } else {
-      // Passwords do not match, authentication failed
-      res.status(401).json({ message: "Authentication failed" });
+      res.status(401).json({ message: "Invalid credentials" });
     }
   } catch (error) {
     console.error(error);
@@ -74,4 +70,13 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const getUserInfo = async (req, res) => {
+  try {
+    return res.status(200).json({ success: true, user: req?.user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, getUserInfo };

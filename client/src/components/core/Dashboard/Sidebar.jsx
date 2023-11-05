@@ -32,7 +32,7 @@ export default function Sidebar() {
       <div className="max-lg:hidden flex flex-col min-w-[250px] border-r-[1px] border-t-[1px] border-white bg-black py-10">
         <div className="flex flex-col">
           {sidebarLinks.map((item, index) =>
-            item.type && item.type !== user?.accountType ? (
+            item.type && item.type !== user?.Role ? (
               <React.Fragment key={index}></React.Fragment>
             ) : (
               <SidebarLink key={index} item={item} />
@@ -56,7 +56,7 @@ export default function Sidebar() {
       <div className="lg:hidden h-fit py-2 bg-black fixed bottom-0 left-0 w-[100vw] z-[10] flex items-center justify-center">
         <div className="flex flex-row items-center md:justify-between justify-evenly w-full">
           {sidebarLinks.map((item, index) =>
-            item.type && item.type !== user?.accountType ? (
+            item.type && item.type !== user?.Role ? (
               <React.Fragment key={index}></React.Fragment>
             ) : (
               <SidebarLink key={index} item={item} />

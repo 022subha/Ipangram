@@ -18,11 +18,19 @@ export default function Register() {
     role: "",
     email: "",
     password: "",
+    location: "",
     confirmPassword: "",
   });
 
-  const { firstName, lastName, role, email, password, confirmPassword } =
-    formData;
+  const {
+    firstName,
+    lastName,
+    role,
+    email,
+    password,
+    location,
+    confirmPassword,
+  } = formData;
 
   // Handle input fields, when some value changes
   const handleOnChange = (e) => {
@@ -63,6 +71,7 @@ export default function Register() {
       role: "",
       email: "",
       password: "",
+      location: "",
       confirmPassword: "",
     });
   };
@@ -136,6 +145,20 @@ export default function Register() {
                 value={email}
                 onChange={handleOnChange}
                 placeholder="Enter email"
+                className="w-full bg-slate-300 h-[44px] rounded-md px-4"
+              />
+            </div>
+            <div className="flex flex-col items-start w-[100%]">
+              <label className="after:content-['*'] after:text-[#f00]">
+                Location
+              </label>
+              <input
+                required
+                type="text"
+                name="location"
+                value={location}
+                onChange={handleOnChange}
+                placeholder="Enter location"
                 className="w-full bg-slate-300 h-[44px] rounded-md px-4"
               />
             </div>

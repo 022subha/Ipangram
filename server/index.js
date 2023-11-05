@@ -2,17 +2,17 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const authenticateJWT = require("./middleware/middleware.js");
+const { authenticateJWT } = require("./middleware/middleware.js");
 const authRoutes = require("./routes/authRoutes.js");
-const hrRoutes = require("./routes/hrRoutes.js");
-//const employeeRoutes = require("./routes/employeeRoutes.js");
+const employeeRoutes = require("./routes/employeeRoutes.js");
+const departmentRoutes = require("./routes/departmentRoutes.js");
 
 const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
 const corsOptions = {
-  origin: "http://localhost:3001", // Replace with your React app's URL
+  origin: "http://localhost:3000",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
 };
@@ -35,11 +35,9 @@ app.get("/", (req, res) => {
   res.send("Welcome To Ipangram");
 });
 
-// Use the auth routes
 app.use("/api/auth", authRoutes);
-
-//use the hr routes
-app.use("/api/hr", authenticateJWT, hrRoutes);
+app.use("/api/employee", employeeRoutes);
+app.use("/api/department", departmentRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

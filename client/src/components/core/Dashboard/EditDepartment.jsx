@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { createDepartment } from "../../../services/operations/departmentAPI";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  editDepartment,
+  getDepartmentInfo,
+} from "../../../services/operations/departmentAPI";
 
-export default function AddDepartment() {
+export default function EditDepartment() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [departmentName, setDepartmentName] = useState("");
   const [error, setError] = useState(false);
+  const { departmentId } = useParams();
 
   const handleOnChange = (e) => {
     setDepartmentName(e.target.value);
@@ -22,8 +26,18 @@ export default function AddDepartment() {
       return;
     }
 
-    dispatch(createDepartment({ name: departmentName }, navigate));
+    dispatch(editDepartment({ name: departmentName, departmentId }, navigate));
   };
+
+  useEffect(() => {
+    const fetchDepartment = async () => {
+      const department = await dispatch(getDepartmentInfo(departmentId));
+      setDepartmentName(department?.name);
+    };
+
+    fetchDepartment();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <form
@@ -57,7 +71,7 @@ export default function AddDepartment() {
         <button
           className={`flex items-center bg-custom-gradient cursor-pointer gap-x-2 rounded-md py-2 px-5 font-semibold text-white`}
         >
-          <span>Create Department</span>
+          <span>Edit Department</span>
         </button>
       </div>
     </form>

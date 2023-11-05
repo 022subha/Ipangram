@@ -9,20 +9,21 @@ export const sidebarLinks = [
     id: 2,
     name: "Departments",
     path: "/dashboard/departments",
-    // type: "HR",
+    type: "Manager",
     icon: "VscOutput",
   },
   {
     id: 3,
     name: "Employees",
     path: "/dashboard/employees",
+    type: "Manager",
     icon: "VscSmiley",
   },
   {
     id: 4,
     name: "Add Departments",
     path: "/dashboard/add-department",
-    // type: "HR",
+    type: "Manager",
     icon: "VscAdd",
   },
 ];
